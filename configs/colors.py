@@ -1,3 +1,7 @@
+############################
+##      ARES Server       ##
+##  Author: Patrik Čelko  ##
+############################
 
 from enum import Enum
 

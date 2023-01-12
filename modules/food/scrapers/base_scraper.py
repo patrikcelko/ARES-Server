@@ -1,3 +1,8 @@
+############################
+##      ARES Server       ##
+##  Author: Patrik Čelko  ##
+############################
+
 from datetime import datetime
 from configs import config
 

@@ -1,3 +1,7 @@
+############################
+##      ARES Server       ##
+##  Author: Patrik Čelko  ##
+############################
 
 ## System information
 VERSION: float = 1.1

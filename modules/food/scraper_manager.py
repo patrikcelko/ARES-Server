@@ -1,3 +1,8 @@
+############################
+##      ARES Server       ##
+##  Author: Patrik Čelko  ##
+############################
+
 from typing import Dict, List, Optional, Set
 from modules.food.scrapers.base_scraper import BaseScraper
 from modules.food.scrapers import *

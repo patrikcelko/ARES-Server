@@ -13,6 +13,7 @@ class TemperatureManager(BaseManager):
     DESCRIPTION = "Display actual temperatures."
     MANAGER_NAME = "Temperature"
 
+    # Sensors that we are looking for
     SENSOR_NAMES = [
         'nvme',
         'coretemp',
@@ -23,8 +24,6 @@ class TemperatureManager(BaseManager):
 
     def __init__(self, app):
         super().__init__(app)
-        
-        self.log.warning("Ja by som mal byt teplota")
         
         self.data = []
 

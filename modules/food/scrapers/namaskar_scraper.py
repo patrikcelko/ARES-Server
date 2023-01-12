@@ -1,3 +1,8 @@
+############################
+##      ARES Server       ##
+##  Author: Patrik Čelko  ##
+############################
+
 from modules.food.scrapers.base_scraper import BaseScraper
 
 class NamaskarScraper(BaseScraper):

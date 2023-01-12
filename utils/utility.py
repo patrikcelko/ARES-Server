@@ -7,6 +7,7 @@
 from modules.base_manager import BaseManager
 from os import path
 from typing import Callable, Dict, List
+from exceptions.http_errors import HttpError
 from exceptions.modul_errors import MissingManagerClass, MissingManagerClassComponent
 from utils.logger import log
 from os import listdir, path
@@ -74,12 +75,22 @@ class Utility:
         @app.route(str(f'/{route_name}/<path:sub_route>'))
         @Utility.rename_function(str(f'router_{route_name}'))
         def route_getter(sub_route: str):
-            return manager.route(sub_route.split('/'))
+            try:
+                return manager.route(sub_route.split('/'))
+            except HttpError as exc:
+                return exc.get_response(str(exc), sub_route)
+            except Exception as def_exc:
+                return HttpError.default_response(str(def_exc), sub_route)
 
         @app.route(str(f'/{route_name}/'))
         @Utility.rename_function(str(f'main_router_{route_name}'))
         def route_getter():
-            return manager.route(None)
+            try:
+                return manager.route(None)
+            except HttpError as exc:
+                return exc.get_response(str(exc))
+            except Exception as def_exc:
+                return HttpError.default_response(str(def_exc))
         
         return route_getter
 

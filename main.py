@@ -4,6 +4,7 @@
 ############################
 
 import logging
+
 from typing import Dict
 from flask import Flask
 from utils.utility import Utility

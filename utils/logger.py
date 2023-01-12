@@ -3,8 +3,9 @@
 ##  Author: Patrik Čelko  ##
 ############################
 
-from typing import Dict
 import logging
+
+from typing import Dict
 from configs import config
 from flask.logging import default_handler
 from configs.colors import Color
