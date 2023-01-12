@@ -6,3 +6,7 @@ class ModuleError(Exception):
 class MissingManagerClass(ModuleError):
     def __init__(self, message):
         super().__init__(message)
+
+class MissingManagerClassComponent(ModuleError):
+    def __init__(self, message):
+        super().__init__(message)

@@ -51,7 +51,6 @@ class ScraperManager():
             scraper_instance: BaseScraper = scraper_class()  # Initialise scraper
             if scraper_instance.SCRAPER_NAME in self._scrapers:
                 continue  # If scraer is already loaded just skip
-            log.error("ahoj")
             self._scrapers[scraper_instance.SCRAPER_NAME] = scraper_instance
 
     def get_names(self) -> Set[str]:

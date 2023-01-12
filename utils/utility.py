@@ -4,24 +4,32 @@
 ##  Author: Patrik Čelko  ##
 ############################
 
-from multiprocessing.managers import BaseManager
+from modules.base_manager import BaseManager
 from os import path
-from typing import Dict
-from exceptions.modul_errors import MissingManagerClass
+from typing import Callable, Dict, List
+from exceptions.modul_errors import MissingManagerClass, MissingManagerClassComponent
 from utils.logger import log
 from os import listdir, path
 from flask import Flask
-
 from configs import config
 
 
 class Utility:
+    '''
+    Utility class containing all necessary static methods for a smooth run :)
+    '''
     
     @staticmethod
-    def create_module_link(modules: Dict[str, BaseManager], address: str):
-        result_dict = {}
+    def create_module_link(modules: Dict[str, BaseManager], address: str) -> Dict[str, str]:
+        '''
+        Static method that generates a dictionary containing descriptions of
+        the API modules, based on loaded managers
+        '''
+
+        result_dict: Dict[str, str] = {}
+        ssl_rep: str = 'https' if config.ALLOW_SSL else 'http'
+
         for name, module in modules.items():
-            ssl_rep = 'https' if config.ALLOW_SSL else 'http'
             result_dict[name] = {
                 'manager': module.MANAGER_NAME,
                 'description': module.DESCRIPTION,
@@ -30,25 +38,42 @@ class Utility:
         return result_dict
 
     @staticmethod
-    def for_dict(fun, items):
+    def for_dict(fun: Callable, items: dict) -> None:
+        '''
+        Pseudo 'functional' alternative map over the dictionary without returning a result
+        '''
+
         for key, val in items.items():
             fun(key, val)
 
     @staticmethod
-    def rename_function(new_name):
-        def decorator(fun):
+    def rename_function(new_name: str) -> Callable:
+        '''
+        The static method that can as decorator during initialization change function name
+        '''
+
+        def decorator(fun: Callable) -> Callable:
             fun.__name__ = new_name
             return fun
 
         return decorator
 
     @staticmethod
-    def route_wrapper(route_name: str, manager: BaseManager, app: Flask):
+    def route_wrapper(route_name: str, manager: BaseManager, app: Flask) -> Callable:
+        '''
+        The static method that will generate routes for all modules based on
+        the folders in which they are located. We also support sub-routes, so
+        we need to register them too.
+
+        Internally this method wraps the method with a route decorator and maps
+        received requests to the respective manager method "route". 
+        '''
+
         log.debug(f'Decorating endpoint for module {route_name}')
         
         @app.route(str(f'/{route_name}/<path:sub_route>'))
         @Utility.rename_function(str(f'router_{route_name}'))
-        def route_getter(sub_route):
+        def route_getter(sub_route: str):
             return manager.route(sub_route.split('/'))
 
         @app.route(str(f'/{route_name}/'))
@@ -59,33 +84,55 @@ class Utility:
         return route_getter
 
     @staticmethod
-    def proccess_imports(import_obj, name):
+    def proccess_imports(import_obj, name: str) -> Dict[str, BaseManager]:
+        '''
+        The static method that will based on the import object retrieve 
+        manager class specific for the module name
+        '''
+
         tmp_import = getattr(getattr(import_obj, name), 'manager')
-        avalible_atributes = dir(tmp_import)
+        avalible_atributes: List[str] = dir(tmp_import)
 
         for attribute in avalible_atributes:
             if not attribute.endswith('Manager') or attribute == 'BaseManager':
-                continue
+                continue  # Get rid of none-Manager classes
+
             candidate_class = getattr(tmp_import, attribute)
-            if 'MANAGER_NAME' in dir(getattr(tmp_import, attribute)):
-                return (name, candidate_class)
+            if not issubclass(candidate_class, BaseManager):
+                continue
+            
+            class_attributes: List[str] = dir(getattr(tmp_import, attribute))
+            for attribute in BaseManager.REQUIRED_ATTRIBUTES:
+                if attribute not in class_attributes:
+                    raise MissingManagerClassComponent(\
+                        f'Was not able to locate attribute {attribute} in manager for module {name}.')
+            
             log.debug(f'Successfully loaded {name}.')
+            return (name, candidate_class)
     
-        raise MissingManagerClass(f'Was not abel to load manager for module {name}.')
+        raise MissingManagerClass(f'Was not able to load manager for module {name}.')
 
     @staticmethod
-    def get_managers_name(main_path):
+    def get_managers_name(main_path: str) -> List[str]:
         '''
-            Function that will automatically go throu all folders in folder modules and
-            all managers names that will be able to found
+            The static function that automatically goes through all folders in 
+            the folder "modules" and returns all manager's names that will be 
+            able to find as list
         '''
 
-        modules_path = f'{path.dirname(path.abspath(main_path))}/modules/'
-        module_names = list(filter(
-            lambda val: not val.startswith('__') and '.' not in val and path.isdir(f'{modules_path}{val}'), 
+        modules_path: str  = f'{path.dirname(path.abspath(main_path))}/modules/'
+        module_names: List[str] = list(filter(
+            lambda val: not val.startswith('__') and '.' not in val and \
+                path.isdir(f'{modules_path}{val}'), 
             listdir(modules_path))
         )
-        log.info(f'Successfully found {len(module_names)}.')
+        module_size: int = len(module_names)
+
+        if module_size <= 0:
+            log.warning('Something is possibly wrong, mo manger was found.')
+            return module_names  # This will be for sure [ ]
+
+        log.info(f'Successfully found {module_size}.')
         log.debug(f'Found modules: {module_names}')
 
         return module_names

@@ -8,13 +8,10 @@ from psutil import sensors_temperatures
 from exceptions.temp_sensor_errors import NoTempSensors
 from modules.base_manager import BaseManager
 
-def foo():
-    pass
-
 class TemperatureManager(BaseManager):
 
     DESCRIPTION = "Display actual temperatures."
-    MANAGER_NAME = "Temperature manager"
+    MANAGER_NAME = "Temperature"
 
     SENSOR_NAMES = [
         'nvme',

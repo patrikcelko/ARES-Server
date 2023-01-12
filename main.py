@@ -3,10 +3,12 @@
 ##  Author: Patrik Čelko  ##
 ############################
 
+import logging
 from typing import Dict
 from flask import Flask
 from utils.utility import Utility
 from modules.base_manager import BaseManager
+from utils.logger import AresLogger
 
 from configs import config
 
@@ -16,6 +18,9 @@ ARES Server entry point.
 application -> Flask app instance
 modules -> List of the modules
 '''
+
+# Initialise logger
+logging.setLoggerClass(AresLogger)
 
 # Main application instance
 application: Flask = Flask(config.NAME)
