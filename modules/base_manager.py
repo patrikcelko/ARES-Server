@@ -39,7 +39,5 @@ class BaseManager:
             if not getattr(self, item):
                 raise MissingManagerClassComponent(f'The module must have a filled {item}.')
 
-        self.log = AresLogger(config.NAME, f' [{self.MANAGER_NAME}]')
-
     def route(self, sub_route: List[str]) -> Response:
         raise NotImplemented('Missing implementation for the selected route.')
