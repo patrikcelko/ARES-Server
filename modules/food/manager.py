@@ -10,6 +10,7 @@ class FoodManager(BaseManager):
     def __init__(self, app):
         super().__init__(app)
         self._scraper_manager: ScraperManager = ScraperManager()
+        self.log.warn("A ja by som mal byt food")
         
 
     def test(self):

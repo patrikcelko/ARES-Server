@@ -32,9 +32,10 @@ class AresFormatter(logging.Formatter):
             self.LEVEL_COLORS.items()
         )))
    
-    def format(self, record):
+    def format(self, record: logging.LogRecord):
         original_logger = self.FORMATS.get(record.levelno)
-        return logging.Formatter(original_logger).format(record)
+        return logging.Formatter(original_logger, 
+            '[%d.%m.%Y %H:%M:%S]').format(record)
 
 
 class AresLogger(logging.Logger):
@@ -42,16 +43,25 @@ class AresLogger(logging.Logger):
     Custom server logger
     '''
 
-    FORMATTER = '[%(asctime)s] [%(levelname)s]{}: %(message)s'
+    FORMATTER = '%(asctime)s %(levelname)-8s %(name)s%(message)s'
     
-    def __init__(self, name: str, manager_name: str='') -> None:
-        super().__init__(name, 
-            logging.DEBUG if config.ALLOW_DEBUG else logging.INFO)
-        self.addHandler(default_handler)
-        default_handler.setFormatter(AresFormatter(self.FORMATTER.format(manager_name)))
+    def __init__(self, name: str, manager_name: str='', skip_adding=False) -> None:
+        
+        # Initialise formatter
+        res_name = f'[{name}]{Color.RESET}: ' if not manager_name else \
+            f'[{name}]-{Color.ORANGE}-[{manager_name}]{Color.RESET}: '
+        super().__init__(res_name, logging.DEBUG if config.ALLOW_DEBUG else logging.INFO)
+        self.ares_formatter = AresFormatter(self.FORMATTER)
+        
+        # Colors
+        self.colorHandler = logging.StreamHandler()
+        self.addHandler(self.colorHandler)
+        self.colorHandler.setFormatter(AresFormatter(self.FORMATTER))
 
-# Root logger
+
+# Root logger (use only for system stuff)
 log: AresLogger = AresLogger(config.NAME)
+default_handler.setFormatter(log.ares_formatter)
 
 
 

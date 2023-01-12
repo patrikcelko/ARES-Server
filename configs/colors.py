@@ -12,6 +12,7 @@ class Color(Enum):
     RED = '\x1b[38;5;196m'
     BLOD_RED = '\x1b[31;1m'
     RESET = '\x1b[0m'
+    ORANGE = '\x1b[93m'
 
     def __str__(self):
         '''

@@ -23,6 +23,9 @@ class TemperatureManager(BaseManager):
 
     def __init__(self, app):
         super().__init__(app)
+        
+        self.log.warning("Ja by som mal byt teplota")
+        
         self.data = []
 
     def _scrape_data(self):
