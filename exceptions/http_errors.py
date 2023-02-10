@@ -17,6 +17,7 @@ class HttpError(Exception):
             'description': self.description,
             'exc-message': message
         }
+        
     @staticmethod
     def default_response(message, sub_route=None):
         return { 'exc-message': message }

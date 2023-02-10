@@ -1,8 +1,3 @@
-############################
-##      ARES Server       ##
-##  Author: Patrik Čelko  ##
-############################
-
 import logging
 
 from typing import Dict
@@ -14,11 +9,14 @@ from utils.logger import AresLogger
 from configs import config
 
 '''
-ARES Server entry point.
+    ARES Server entry point.
 
-application -> Flask app instance
-modules -> List of the modules
+    application -> Flask app instance
+    modules -> List of the modules
 '''
+
+# Initialise enviroment
+Utility.init_enviroment()
 
 # Initialise logger
 logging.setLoggerClass(AresLogger)

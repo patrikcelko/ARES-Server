@@ -5,6 +5,7 @@
 
 from datetime import datetime
 from configs import config
+from selenium import webdriver
 
 '''
 Basic class for scrapers
@@ -14,11 +15,16 @@ Note: All scrapers classes must ends with word "Scraper"
 class BaseScraper():
 
     SCRAPER_NAME: str = None
+    URL: str = None
 
     def __init__(self) -> None:
         self.last_run: datetime = None
-        if self.SCRAPER_NAME is None:
+
+        if self.SCRAPER_NAME is None or self.URL is None:
             raise NotImplementedError('The scraper must have implemented the name.')
+
+        self.scraper = webdriver.PhantomJS()
+        
 
     def run_scraper(self) -> None:
         raise NotImplementedError(f'Run implementation for {self.SCRAPER_NAME}, does not exist.')

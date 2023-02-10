@@ -1,9 +1,3 @@
-
-############################
-##      ARES Server       ##
-##  Author: Patrik Čelko  ##
-############################
-
 from modules.base_manager import BaseManager
 from os import path
 from typing import Callable, Dict, List
@@ -13,18 +7,44 @@ from utils.logger import log
 from os import listdir, path
 from flask import Flask
 from configs import config
-
+import os
+from configs.config import HOME_PATH
 
 class Utility:
     '''
-    Utility class containing all necessary static methods for a smooth run :)
+        Utility class containing all necessary static methods for a smooth run :)
     '''
+
+    def init_enviroment():
+        '''
+            Create necessary folders and do the initiation
+        '''
+
+        PATHS_TO_VALIDATE = [
+            'logs'
+        ]
+
+        for sub_path in PATHS_TO_VALIDATE:
+            full_path = os.path.join(HOME_PATH, sub_path)
+            if os.path.exists(full_path):
+                continue
+                
+            log.warn(f'Missing folder at path: {full_path}. Trying to create one.')
+            try:
+                os.mkdir(full_path, mode = 0o777)
+            except OSError as exc:
+                log.error(f'Was not able to create a folder during init\
+                    (path: {full_path}). Original message: {str(exc)}')
+        
+        log.debug('Initialization run successfully.')
+                
+            
     
     @staticmethod
     def create_module_link(modules: Dict[str, BaseManager], address: str) -> Dict[str, str]:
         '''
-        Static method that generates a dictionary containing descriptions of
-        the API modules, based on loaded managers
+            Static method that generates a dictionary containing descriptions of
+            the API modules, based on loaded managers
         '''
 
         result_dict: Dict[str, str] = {}
@@ -41,7 +61,7 @@ class Utility:
     @staticmethod
     def for_dict(fun: Callable, items: dict) -> None:
         '''
-        Pseudo 'functional' alternative map over the dictionary without returning a result
+            Pseudo 'functional' alternative map over the dictionary without returning a result
         '''
 
         for key, val in items.items():
@@ -50,7 +70,7 @@ class Utility:
     @staticmethod
     def rename_function(new_name: str) -> Callable:
         '''
-        The static method that can as decorator during initialization change function name
+            The static method that can as decorator during initialization change function name
         '''
 
         def decorator(fun: Callable) -> Callable:
@@ -62,12 +82,12 @@ class Utility:
     @staticmethod
     def route_wrapper(route_name: str, manager: BaseManager, app: Flask) -> Callable:
         '''
-        The static method that will generate routes for all modules based on
-        the folders in which they are located. We also support sub-routes, so
-        we need to register them too.
+            The static method that will generate routes for all modules based on
+            the folders in which they are located. We also support sub-routes, so
+            we need to register them too.
 
-        Internally this method wraps the method with a route decorator and maps
-        received requests to the respective manager method "route". 
+            Internally this method wraps the method with a route decorator and maps
+            received requests to the respective manager method "route". 
         '''
 
         log.debug(f'Decorating endpoint for module {route_name}')
@@ -97,8 +117,8 @@ class Utility:
     @staticmethod
     def proccess_imports(import_obj, name: str) -> Dict[str, BaseManager]:
         '''
-        The static method that will based on the import object retrieve 
-        manager class specific for the module name
+            The static method that will based on the import object retrieve 
+            manager class specific for the module name
         '''
 
         tmp_import = getattr(getattr(import_obj, name), 'manager')

@@ -1,8 +1,3 @@
-############################
-##      ARES Server       ##
-##  Author: Patrik Čelko  ##
-############################
-
 import logging
 
 from typing import Dict
@@ -13,7 +8,7 @@ from configs.colors import Color
 
 class AresFormatter(logging.Formatter):
     '''
-    Class representing colored formatter
+        Class representing colored formatter
     '''
 
     LEVEL_COLORS: Dict[int, str] = {
@@ -41,21 +36,32 @@ class AresFormatter(logging.Formatter):
 
 class AresLogger(logging.Logger):
     '''
-    Custom server logger
+        Custom server logger
     '''
+
+    REWRITE_RULE = {
+        'selenium.webdriver.remote.remote_connection': 'Selenium-Driver',
+    }
 
     FORMATTER = '%(asctime)s %(levelname)-8s %(name)s%(message)s'
     
     def __init__(self, name: str, manager_name: str='', skip_adding=False) -> None:
         
+        # Mekanism to override some badly composed names of loggers
+        rewrite_value = self.REWRITE_RULE.get(name)
+        if rewrite_value:
+            name = rewrite_value
+
         # Initialise formatter
         res_name = f'[{name}]{Color.RESET}: ' if not manager_name else \
             f'[{name}]-{Color.ORANGE}-[{manager_name}]{Color.RESET}: '
+
         super().__init__(res_name, logging.DEBUG if config.ALLOW_DEBUG else logging.INFO)
+
         self.ares_formatter = AresFormatter(self.FORMATTER)
         
         # Colors
-        self.colorHandler = logging.StreamHandler()
+        self.colorHandler: logging.StreamHandler = logging.StreamHandler()
         self.addHandler(self.colorHandler)
         self.colorHandler.setFormatter(AresFormatter(self.FORMATTER))
 

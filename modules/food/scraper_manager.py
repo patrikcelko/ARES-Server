@@ -1,8 +1,3 @@
-############################
-##      ARES Server       ##
-##  Author: Patrik Čelko  ##
-############################
-
 from typing import Dict, List, Optional, Set
 from modules.food.scrapers.base_scraper import BaseScraper
 from modules.food.scrapers import *
@@ -80,3 +75,4 @@ class ScraperManager():
         '''
         for scraper_name, scraper_instance in self._scrapers.items():
             scraper_instance.run_scraper()
+        return "ahoj"

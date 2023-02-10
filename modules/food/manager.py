@@ -1,8 +1,3 @@
-############################
-##      ARES Server       ##
-##  Author: Patrik Čelko  ##
-############################
-
 from modules.base_manager import BaseManager
 from modules.food.scraper_manager import ScraperManager
 
@@ -17,8 +12,13 @@ class FoodManager(BaseManager):
         self.log.warn("A ja by som mal byt food")
 
     def route(self, sub_route):
-        print(sub_route)
-        return "Food manager"
+        self.log.critical(self._scraper_manager._scrapers)
+        scrap = self._scraper_manager._scrapers['namaskar.cz']
+        self.log.critical(scrap)
+
+
+        return scrap.run_scraper()
+        #return "Food manager"
 
 
 

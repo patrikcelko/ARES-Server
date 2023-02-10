@@ -1,9 +1,3 @@
-
-############################
-##      ARES Server       ##
-##  Author: Patrik Čelko  ##
-############################
-
 from typing import List
 
 from flask import Flask, Response
@@ -14,11 +8,11 @@ from configs import config
 
 class BaseManager:
     '''
-    Base class for all modules managers
+        Base class for all modules managers
 
-    Note: 
-        - Manager class name must end with the word "Manager"
-        - Manager must have filled all attributes mentioned in REQUIRED_ATTRIBUTES
+        Note: 
+            - Manager class name must end with the word "Manager"
+            - Manager must have filled all attributes mentioned in REQUIRED_ATTRIBUTES
     '''
 
     REQUIRED_ATTRIBUTES: List[str] = [
