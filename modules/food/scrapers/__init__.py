@@ -1,8 +1,3 @@
-############################
-##      ARES Server       ##
-##  Author: Patrik Čelko  ##
-############################
-
 from typing import List
 from os import listdir, path
 from utils.logger import log

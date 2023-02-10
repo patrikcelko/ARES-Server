@@ -1,8 +1,3 @@
-############################
-##      ARES Server       ##
-##  Author: Patrik Čelko  ##
-############################
-
 from enum import Enum
 
 class Color(Enum):

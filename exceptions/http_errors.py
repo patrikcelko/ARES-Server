@@ -1,8 +1,3 @@
-############################
-##      ARES Server       ##
-##  Author: Patrik Čelko  ##
-############################
-
 class HttpError(Exception):
 
     def __init__(self):

@@ -1,16 +1,11 @@
-############################
-##      ARES Server       ##
-##  Author: Patrik Čelko  ##
-############################
-
 from datetime import datetime
 from configs import config
 from selenium import webdriver
 
 '''
-Basic class for scrapers
+    Basic class for scrapers
 
-Note: All scrapers classes must ends with word "Scraper"
+    Note: All scrapers classes must ends with word "Scraper"
 '''
 class BaseScraper():
 
