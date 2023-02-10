@@ -130,3 +130,6 @@ dmypy.json
 
 # Ignore logs
 logs/*
+
+# Ares config file (copy of the default one but with sec. information)
+configs/config.py
